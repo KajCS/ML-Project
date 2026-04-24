@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dropout Prediction</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #4facfe, #45f6ff);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 350px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 15px;
+        border: none;
+        border-radius: 8px;
+        background: #4facfe;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    }
+
+    .btn-group button {
+        width: 100%;
+    }
+
+
+    .btn-group button[type="button"] {
+        background: #ff3939;
+        color: #ffffff;
+    }
+
+    .btn-group button[type="button"]:hover {
+        background: #ff7474;
+    }
+
+    button:hover {
+        background: #3a8fd8;
+    }
+
+    .result {
+        margin-top: 20px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .footer {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #888;
+    }
+
+    .result {
+    margin-top: 20px;
+    font-weight: bold;
+    }
+
+    .danger {
+        color: #e74c3c;
+    }
+
+    .success {
+        color: #2ecc71;
+    }
+
+    
+</style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎓 Student Predictor</h1>
+    <form method="POST">
+        <input type="number" step="any" name="age" placeholder="Age"
+          value="{{ request.form.age if request.form else '' }}" required>
+
+          <input type="number" step="any" name="grade" placeholder="Admission Grade (95 - 190):"
+          value="{{ request.form.grade if request.form else '' }}" required>
+
+          <input type="number" step="any" name="enrolled" placeholder="2nd Sem Units Enrolled"
+          value="{{ request.form.enrolled if request.form else '' }}" required>
+
+          <input type="number" step="any" name="approved" placeholder="2nd Sem Units Approved"
+          value="{{ request.form.approved if request.form else '' }}" required>
+
+          <div class="btn-group">
+            <button type="submit">Predict</button>
+            <button type="button" onclick="clearForm()">Clear</button>
+          </div>
+    </form>
+
+    {% if prediction_text %}
+    <div class="result
+        {% if 'Dropout' in prediction_text %}
+            danger
+        {% elif 'Graduate' in prediction_text %}
+            success
+        {% endif %} ">
+        {{ prediction_text }}
+        </div>
+        {% endif %}
+
+          <div class="footer">
+              Machine Learning Dropout Prediction
+          </div>
+    
+        </div>
+    <script>
+      function clearForm() {
+          window.location.href = "/";
+      }
+    </script>
+  </body> 
+</html>
+
