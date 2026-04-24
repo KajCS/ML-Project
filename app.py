@@ -3,9 +3,19 @@ import pandas as pd
 import joblib
 
 app = Flask(__name__)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+app.jinja_env.auto_reload = True
 
 # Load your trained model
 model = joblib.load('student_dropout_model.pkl')
+
+@app.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -24,7 +34,7 @@ def home():
         data = {
             'Marital status': 1, 'Application mode': 1, 'Application order': 1, 'Course': 1,
             'Daytime/evening attendance\t': 1, 'Previous qualification': 1, 'Previous qualification (grade)': 120.0,
-            'Nationality': 1, 'Mother\'s qualification': 1, 'Father\'s qualification': 1, 
+            'Nacionality': 1, 'Mother\'s qualification': 1, 'Father\'s qualification': 1,
             'Mother\'s occupation': 1, 'Father\'s occupation': 1, 'Admission grade': grade,
             'Displaced': 1, 'Educational special needs': 0, 'Debtor': 0,
             'Tuition fees up to date': 1, 'Gender': 1, 'Scholarship holder': 0,

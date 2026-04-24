@@ -1,0 +1,371 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Dropout Predictor</title>
+    <style>
+      :root {
+        --bg1: #0b1220;
+        --bg2: #0f1c3a;
+        --card: rgba(255, 255, 255, 0.08);
+        --card-border: rgba(255, 255, 255, 0.16);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.7);
+        --muted2: rgba(255, 255, 255, 0.55);
+        --accent: #5ce1e6;
+        --accent2: #7c5cff;
+        --danger: #ff4d6d;
+        --success: #2dd4bf;
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+        --radius: 18px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial,
+          "Noto Sans",
+          "Liberation Sans",
+          sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(1200px 600px at 10% 10%, rgba(124, 92, 255, 0.35), transparent 55%),
+          radial-gradient(900px 500px at 90% 20%, rgba(92, 225, 230, 0.25), transparent 50%),
+          linear-gradient(160deg, var(--bg1), var(--bg2));
+        display: grid;
+        place-items: center;
+        padding: 28px 16px;
+      }
+
+      .shell {
+        width: min(920px, 100%);
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        box-shadow: var(--shadow);
+        border-radius: var(--radius);
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+      }
+
+      .header {
+        padding: 22px 22px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(
+          135deg,
+          rgba(124, 92, 255, 0.18),
+          rgba(92, 225, 230, 0.12)
+        );
+      }
+
+      .title {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: 0.2px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .subtitle {
+        margin: 8px 0 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .content {
+        padding: 18px 22px 22px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      @media (max-width: 520px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .field label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0 0 6px;
+      }
+
+      .field input {
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(10, 16, 32, 0.45);
+        color: var(--text);
+        outline: none;
+        transition:
+          border-color 120ms ease,
+          transform 120ms ease,
+          background 120ms ease;
+      }
+
+      .field input::placeholder {
+        color: rgba(255, 255, 255, 0.38);
+      }
+
+      .field input:focus {
+        border-color: rgba(92, 225, 230, 0.65);
+        background: rgba(10, 16, 32, 0.58);
+        transform: translateY(-1px);
+      }
+
+      .hint {
+        margin-top: 6px;
+        font-size: 11px;
+        color: var(--muted2);
+        line-height: 1.35;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .btn {
+        appearance: none;
+        border: 0;
+        cursor: pointer;
+        border-radius: 12px;
+        padding: 11px 14px;
+        font-weight: 650;
+        letter-spacing: 0.2px;
+        transition:
+          transform 120ms ease,
+          filter 120ms ease,
+          background 120ms ease;
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .btn-primary {
+        flex: 1;
+        color: #08111d;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+      }
+
+      .btn-primary:hover {
+        filter: brightness(1.03);
+      }
+
+      .btn-secondary {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.09);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .note {
+        margin: 14px 0 0;
+        font-size: 12px;
+        color: var(--muted2);
+      }
+
+      .alert {
+        border-radius: 14px;
+        padding: 12px 12px;
+        border: 1px solid rgba(255, 77, 109, 0.55);
+        background: rgba(255, 77, 109, 0.12);
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 14px;
+      }
+
+      .result {
+        padding: 18px 22px 22px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 650;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+      }
+
+      .badge.success {
+        border-color: rgba(45, 212, 191, 0.55);
+        background: rgba(45, 212, 191, 0.14);
+      }
+
+      .badge.danger {
+        border-color: rgba(255, 77, 109, 0.55);
+        background: rgba(255, 77, 109, 0.14);
+      }
+
+      .result h3 {
+        margin: 12px 0 0;
+        font-size: 18px;
+        line-height: 1.35;
+      }
+
+      .footer {
+        margin-top: 10px;
+        font-size: 12px;
+        color: var(--muted2);
+      }
+
+    </style>
+    <script>
+      function validateForm(event) {
+        var enrolled = parseInt(
+          document.getElementsByName("enrolled")[0].value,
+        );
+        var approved = parseInt(
+          document.getElementsByName("approved")[0].value,
+        );
+
+        if (approved > enrolled) {
+          alert(
+            "Input Error: 'Units Approved' cannot be greater than 'Units Enrolled'.",
+          );
+          event.preventDefault();
+          return false;
+        }
+        return true;
+      }
+    </script>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="card">
+        <div class="header">
+          <h2 class="title">
+            <span aria-hidden="true">🎓</span>
+            Student Dropout Predictor
+          </h2>
+          <p class="subtitle">
+            Enter a few student metrics and we’ll estimate the likely outcome. Your inputs stay on this page and only
+            submit to the local app.
+          </p>
+        </div>
+
+        <div class="content">
+          {% if error_text %}
+          <div class="alert"><strong>Input error:</strong> {{ error_text }}</div>
+          {% endif %}
+
+          <form method="POST" action="{{ url_for('home') }}" onsubmit="return validateForm(event);">
+            <div class="grid">
+              <div class="field">
+                <label for="age">Age at enrollment</label>
+                <input id="age" type="number" name="age" required min="15" max="100" placeholder="e.g., 20" />
+                <div class="hint">Typical range: 15–100</div>
+              </div>
+
+              <div class="field">
+                <label for="grade">Admission grade</label>
+                <input
+                  id="grade"
+                  type="number"
+                  name="grade"
+                  step="0.1"
+                  required
+                  min="95"
+                  max="190"
+                  placeholder="95–190"
+                />
+                <div class="hint">Accepted range: 95–190</div>
+              </div>
+
+              <div class="field">
+                <label for="enrolled">2nd sem units enrolled</label>
+                <input
+                  id="enrolled"
+                  type="number"
+                  name="enrolled"
+                  required
+                  min="0"
+                  max="40"
+                  placeholder="e.g., 10"
+                />
+                <div class="hint">Used to compute success rate</div>
+              </div>
+
+              <div class="field">
+                <label for="approved">2nd sem units approved</label>
+                <input
+                  id="approved"
+                  type="number"
+                  name="approved"
+                  required
+                  min="0"
+                  max="40"
+                  placeholder="e.g., 8"
+                />
+                <div class="hint">Must be ≤ enrolled</div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Predict Outcome</button>
+              <button class="btn btn-secondary" type="button" onclick="window.location.href='/'">Clear</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      {% if prediction_text %}
+      <div class="card">
+        <div class="header">
+          <h2 class="title">Result</h2>
+          <p class="subtitle">
+            This section shows the model’s predicted student outcome (Likely graduate vs High risk of dropout) based on
+            the metrics you entered.
+          </p>
+        </div>
+
+        <div class="result">
+          {% set is_dropout = 'Dropout' in prediction_text %}
+          {% set is_grad = 'Graduate' in prediction_text %}
+          <div class="badge {% if is_dropout %}danger{% elif is_grad %}success{% endif %}">
+            {% if is_dropout %}High risk{% elif is_grad %}Likely graduate{% else %}Prediction{% endif %}
+          </div>
+          <h3>{{ prediction_text }}</h3>
+
+          <div class="footer">Machine Learning Dropout Prediction</div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
